@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hospital Management</title>
+</head>
+<body>
+
+  <h1>Hospital Management System</h1>
+  <p id="status">Checking backend...</p>
+
+  <script>
+    fetch("http://localhost:5000")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("status").textContent = data;
+      })
+      .catch(() => {
+        document.getElementById("status").textContent = "Backend not reachable";
+      });
+  </script>
+
+</body>
+</html>
