@@ -1,15 +1,15 @@
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-  host: "localhost",
+  socketPath: "/tmp/mysql.sock",
   user: "root",
-  password: "", //  password
+  password: "Password",
   database: "hospital_db"
 });
 
 db.connect((err) => {
   if (err) {
-    console.log("Database connection failed");
+    console.error("Database connection failed:", err);
   } else {
     console.log("Connected to MySQL");
   }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctors</title>
+</head>
+<body>
+
+<h1>Doctors</h1>
+
+<ul id="doctorList"></ul>
+
+<script>
+fetch("http://localhost:5000/doctors")
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById("doctorList");
+
+    data.forEach(doctor => {
+      const li = document.createElement("li");
+      li.textContent = doctor.doctor_name + " - " + doctor.specialization;
+      list.appendChild(li);
+    });
+  });
+</script>
+
+</body>
+</html>

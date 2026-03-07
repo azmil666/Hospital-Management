@@ -45,8 +45,6 @@ CREATE TABLE bill (
 );
 
 
---DEMO DATAS
-
 -- Sample Departments
 INSERT INTO department (department_name) VALUES
 ('Cardiology'),
