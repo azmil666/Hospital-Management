@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lemonade">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Patients | MedCore</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.3/dist/full.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-base-200">
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+
+<aside class="w-64 bg-base-100 border-r h-screen sticky top-0 flex flex-col">
+
+<div class="p-6 text-2xl font-bold text-primary">
+MedCore
+</div>
+
+<ul class="menu p-4 text-base flex-1">
+
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a href="doctors.html">Doctors</a></li>
+<li><a class="active">Patients</a></li>
+<li><a href="appointments.html">Appointments</a></li>
+<li><a href="bills.html">Billing</a></li>
+<li><a href="departments.html">Departments</a></li>
+
+</ul>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="flex-1 p-8">
+
+<h1 class="text-3xl font-bold mb-8">Patients Management</h1>
+
+<!-- ADD PATIENT -->
+
+<div class="card bg-base-100 shadow p-6 mb-8">
+
+<h2 class="text-xl font-semibold mb-4">Add Patient</h2>
+
+<div class="grid grid-cols-4 gap-4">
+
+<input id="patientName" class="input input-bordered" placeholder="Patient Name">
+
+<input id="patientAge" type="number" class="input input-bordered" placeholder="Age">
+
+<select id="patientGender" class="select select-bordered">
+<option disabled selected>Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
+<input id="patientPhone" class="input input-bordered" placeholder="Phone">
+
+</div>
+
+<button onclick="addPatient()" class="btn btn-primary mt-4">
+Add Patient
+</button>
+
+</div>
+
+<!-- PATIENT TABLE -->
+
+<div class="card bg-base-100 shadow p-6">
+
+<h2 class="text-xl font-semibold mb-4">Patient List</h2>
+
+<table class="table w-full">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Age</th>
+<th>Gender</th>
+<th>Phone</th>
+</tr>
+</thead>
+
+<tbody id="patientTable"></tbody>
+
+</table>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="../js/patients.js"></script>
+
+</body>
+</html>

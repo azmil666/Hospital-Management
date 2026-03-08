@@ -3,107 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hospital Management System | MedCore</title>
+  <title>MedCore | Hospital Management System</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.3/dist/full.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.3/dist/full.min.css" rel="stylesheet" type="text/css" />
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      /* Using Nunito for a softer, more welcoming healthcare feel */
+      font-family: 'Nunito', sans-serif; 
     }
     
-    .bg-pattern {
-      background-image: radial-gradient(hsl(var(--bc) / 0.08) 1.5px, transparent 1.5px);
-      background-size: 24px 24px;
+    /* Clean, clinical, and soft background */
+    .bg-clinical {
+      background: radial-gradient(circle at top left, hsl(var(--p) / 0.15), transparent 40%),
+                  radial-gradient(circle at bottom right, hsl(var(--s) / 0.15), transparent 40%);
+      background-color: hsl(var(--b1));
     }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col bg-gradient-to-br from-base-200 via-base-100 to-base-200 bg-pattern text-base-content selection:bg-primary selection:text-primary-content">
+<body class="min-h-screen flex flex-col bg-clinical text-base-content selection:bg-primary selection:text-primary-content">
 
-  <nav class="navbar bg-base-100/70 backdrop-blur-lg sticky top-0 z-50 border-b border-base-content/5 px-4 lg:px-8">
+  <nav class="navbar bg-base-100/60 backdrop-blur-lg sticky top-0 z-50 border-b border-base-content/10 px-4 lg:px-8 shadow-sm">
     <div class="flex-1 gap-3">
-      <div class="bg-primary/10 text-primary p-2 rounded-xl">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-          <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 7.5a.75.75 0 00-1.5 0v3.75H7.5a.75.75 0 000 1.5h3.75v3.75a.75.75 0 001.5 0v-3.75h3.75a.75.75 0 000-1.5h-3.75V7.5z" clip-rule="evenodd" />
+      <div class="bg-primary text-primary-content p-2 rounded-2xl shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5v6.75c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-6.75M12 4.5v15m0-15A2.25 2.25 0 0 0 9.75 6.75v.75m2.25-3a2.25 2.25 0 0 1 2.25 2.25v.75m-4.5 0h4.5" />
         </svg>
       </div>
-      <a class="text-xl font-bold tracking-tight">Med<span class="text-primary">Core</span></a>
+      <span class="text-2xl font-extrabold tracking-tight">Med<span class="text-primary">Core</span></span>
     </div>
   </nav>
 
-  <main class="flex-grow flex items-center justify-center p-6 sm:p-12">
-    <div class="max-w-6xl w-full mx-auto flex flex-col items-center">
+  <main class="flex-grow flex flex-col items-center justify-center p-6 sm:p-12 relative z-10">
+    
+    <div class="text-center space-y-6 mb-16 max-w-3xl mx-auto pt-8">
       
-      <div class="text-center space-y-6 mb-16 max-w-2xl">
-        <div class="inline-flex items-center justify-center p-4 bg-base-100 shadow-sm rounded-full mb-2 border border-base-content/5 ring-4 ring-primary/5">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-primary">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-base-content leading-tight">
+        MedCore Hospital <br class="hidden sm:block" />
+        <span class="text-primary">Management System</span>
+      </h1>
+      
+      <p class="text-lg sm:text-xl text-base-content/70 font-medium leading-relaxed max-w-2xl mx-auto">
+        Empowering healthcare providers with a unified platform to seamlessly manage departments, doctors, patient care, appointments, and billing.
+      </p>
+      
+      <div class="pt-6">
+        <a href="./admin/dashboard.html" class="btn btn-primary btn-lg rounded-full px-10 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 border-none group text-lg">
+          Enter Admin Dashboard
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
           </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl mx-auto mt-4">
+      
+      <div class="card bg-base-100/80 backdrop-blur-md border border-base-content/5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl">
+        <div class="card-body p-8">
+          <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Facility & Departments</h3>
+          <p class="text-base-content/60 text-sm leading-relaxed">Organize clinical wings, allocate medical resources, and oversee cross-departmental workflows.</p>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-base-content leading-tight">
-          Modern Healthcare <br class="hidden sm:block"/> 
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">At Your Fingertips</span>
-        </h1>
-        <p class="text-lg sm:text-xl text-base-content/60 font-medium">
-          Choose your portal to manage appointments, records, and billing with our secure and intuitive platform.
-        </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl relative z-10">
-        
-        <div class="group card bg-base-100/80 backdrop-blur-sm border border-base-content/5 shadow-xl hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300 ease-out">
-          <div class="card-body p-8 sm:p-10 items-center text-center">
-            
-            <div class="w-32 h-32 mb-6 mask mask-squircle bg-base-200 flex items-center justify-center group-hover:-translate-y-2 transition-transform duration-500 overflow-hidden shadow-inner">
-              <img src="./public/doctor.png" alt="Doctor Illustration" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" />
-            </div>
-
-            <h2 class="card-title text-2xl font-bold mb-2">Doctor Portal</h2>
-            <p class="text-base-content/60 mb-8 leading-relaxed">Access patient records, manage daily appointments, and process bills securely through the staff dashboard.</p>
-            <div class="card-actions w-full">
-              <a href="doctor/dashboard.html" class="btn btn-primary btn-block text-base group/btn h-14">
-                Enter Doctor Dashboard
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 ml-1 transform group-hover/btn:translate-x-1 transition-transform">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
-            </div>
+      <div class="card bg-base-100/80 backdrop-blur-md border border-base-content/5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl">
+        <div class="card-body p-8">
+          <div class="w-14 h-14 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" /></svg>
           </div>
+          <h3 class="text-xl font-bold mb-2">Staff & Patients</h3>
+          <p class="text-base-content/60 text-sm leading-relaxed">Maintain secure electronic health records (EHR) and manage medical staff schedules efficiently.</p>
         </div>
-
-        <div class="group card bg-base-100/80 backdrop-blur-sm border border-base-content/5 shadow-xl hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-2 transition-all duration-300 ease-out">
-          <div class="card-body p-8 sm:p-10 items-center text-center">
-            
-            <div class="w-32 h-32 mb-6 mask mask-squircle bg-base-200 flex items-center justify-center group-hover:-translate-y-2 transition-transform duration-500 overflow-hidden shadow-inner">
-               <img src="./public/patient.png" alt="Patient Illustration" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out" />
-            </div>
-
-            <h2 class="card-title text-2xl font-bold mb-2">Patient Portal</h2>
-            <p class="text-base-content/60 mb-8 leading-relaxed">Book new appointments, view your medical history, and handle payments in your personal dashboard.</p>
-            <div class="card-actions w-full">
-              <a href="patient/dashboard.html" class="btn btn-secondary btn-block text-base group/btn h-14">
-                Enter Patient Dashboard
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 ml-1 transform group-hover/btn:translate-x-1 transition-transform">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-
       </div>
+
+      <div class="card bg-base-100/80 backdrop-blur-md border border-base-content/5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl">
+        <div class="card-body p-8">
+          <div class="w-14 h-14 rounded-2xl bg-accent/10 text-accent flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" /></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Appointments</h3>
+          <p class="text-base-content/60 text-sm leading-relaxed">Streamline daily scheduling, manage patient queues, and send automated clinical reminders.</p>
+        </div>
+      </div>
+
+      <div class="card bg-base-100/80 backdrop-blur-md border border-base-content/5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-3xl">
+        <div class="card-body p-8">
+          <div class="w-14 h-14 rounded-2xl bg-info/10 text-info flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Integrated Billing</h3>
+          <p class="text-base-content/60 text-sm leading-relaxed">Process patient invoices securely, manage insurance claims, and track pharmacy expenses.</p>
+        </div>
+      </div>
+
     </div>
   </main>
 
-  <footer class="footer footer-center p-6 text-base-content/50 mt-auto border-t border-base-content/5 bg-base-100/50 backdrop-blur-sm">
+  <footer class="footer footer-center p-6 text-base-content/50 mt-auto bg-base-100/40 backdrop-blur-md border-t border-base-content/10">
     <aside>
-      <p>Copyright © 2026 - MedCore Healthcare Systems. All rights reserved.</p>
+      <p class="font-medium">Copyright © 2026 - MedCore Healthcare Systems. All rights reserved.</p>
     </aside>
   </footer>
 
