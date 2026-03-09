@@ -1,5 +1,16 @@
 const API = "http://localhost:5000";
 
+function formatDate(dateStr) {
+
+const date = new Date(dateStr);
+
+return date.toLocaleDateString("en-IN", {
+month: "short",
+day: "numeric"
+});
+
+}
+
 /* DASHBOARD COUNTS */
 
 async function loadDashboard() {
@@ -21,7 +32,7 @@ async function loadAppointmentChart() {
 const res = await fetch(API + "/analytics/appointments");
 const data = await res.json();
 
-const labels = data.map(d => d.appointment_date);
+const labels = data.map(d => formatDate(d.appointment_date));
 const values = data.map(d => d.total);
 
 const ctx = document.getElementById("appointmentChart");
@@ -32,11 +43,50 @@ type: "line",
 
 data: {
 labels: labels,
+
 datasets: [{
 label: "Appointments",
+
 data: values,
-borderWidth: 2
+
+borderColor: "#63f190",
+backgroundColor: "rgba(99, 241, 158, 0.1)",
+
+tension: 0.4,
+fill: true,
+pointRadius: 4,
+pointBackgroundColor: "#7df163"
 }]
+},
+
+options: {
+
+responsive: true,
+
+plugins: {
+legend: {
+display: true,
+position: "top"
+}
+},
+
+scales: {
+
+y: {
+beginAtZero: true,
+grid: {
+color: "rgba(0,0,0,0.05)"
+}
+},
+
+x: {
+grid: {
+display: false
+}
+}
+
+}
+
 }
 
 });
@@ -50,7 +100,7 @@ async function loadRevenueChart() {
 const res = await fetch(API + "/analytics/revenue");
 const data = await res.json();
 
-const labels = data.map(d => d.bill_date);
+const labels = data.map(d => formatDate(d.bill_date));
 const values = data.map(d => d.total);
 
 const ctx = document.getElementById("revenueChart");
@@ -60,18 +110,54 @@ new Chart(ctx, {
 type: "bar",
 
 data: {
+
 labels: labels,
+
 datasets: [{
 label: "Revenue",
+
 data: values,
-borderWidth: 1
+
+backgroundColor: "#10b981",
+borderRadius: 6,
+barThickness: 40
 }]
+
+},
+
+options: {
+
+responsive: true,
+
+plugins: {
+legend: {
+display: true,
+position: "top"
+}
+},
+
+scales: {
+
+y: {
+beginAtZero: true,
+grid: {
+color: "rgba(0,0,0,0.05)"
+}
+},
+
+x: {
+grid: {
+display: false
+}
+}
+
+}
+
 }
 
 });
 
 }
-
 /* LOAD EVERYTHING */
 
 loadDashboard();
