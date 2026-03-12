@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lemonade">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Patients | MedCore</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.3/dist/full.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-base-200">
+<nav class="navbar bg-base-100/60 backdrop-blur-lg sticky top-0 z-50 border-b border-base-content/10 px-4 lg:px-8 shadow-sm">
+
+<div class="flex-1 gap-3">
+
+<!-- BACK BUTTON -->
+<button onclick="goBack()" class="btn btn-ghost btn-circle">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+</svg>
+</button>
+
+<!-- HOME BUTTON -->
+<a href="../index.html" class="btn btn-ghost btn-circle">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+</svg>
+</a>
+
+<!-- LOGO -->
+<div class="bg-primary text-primary-content p-2 rounded-2xl shadow-sm ml-2">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+<path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5v6.75c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-6.75M12 4.5v15m0-15A2.25 2.25 0 0 0 9.75 6.75v.75m2.25-3a2.25 2.25 0 0 1 2.25 2.25v.75m-4.5 0h4.5"/>
+</svg>
+</div>
+
+<span class="text-2xl font-extrabold tracking-tight">
+Med<span class="text-primary">Core</span>
+</span>
+
+</div>
+
+</nav>
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+
+<aside class="w-64 bg-base-100 border-r h-screen sticky top-0 flex flex-col">
+
+<div class="p-6 text-2xl font-bold ">
+    <span class="text-2xl font-extrabold tracking-tight">Med<span class="text-primary">Core</span></span>
+</div>
+
+<ul class="menu p-4 text-base flex-1">
+
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a href="doctors.html">Doctors</a></li>
+<li><a class="active">Patients</a></li>
+<li><a href="appointments.html">Appointments</a></li>
+<li><a href="bills.html">Billing</a></li>
+<li><a href="departments.html">Departments</a></li>
+
+</ul>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="flex-1 p-8">
+
+<h1 class="text-3xl font-bold mb-8">Patients Management</h1>
+
+<!-- ADD PATIENT -->
+
+<div class="card bg-base-100 shadow p-6 mb-8">
+
+<h2 class="text-xl font-semibold mb-4">Add Patient</h2>
+
+<div class="grid grid-cols-4 gap-4">
+
+<input id="patientName" class="input input-bordered" placeholder="Patient Name">
+
+<input id="patientAge" type="number" class="input input-bordered" placeholder="Age">
+
+<select id="patientGender" class="select select-bordered">
+<option disabled selected>Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
+<input id="patientPhone" class="input input-bordered" placeholder="Phone">
+
+</div>
+
+<button onclick="addPatient()" class="btn btn-primary mt-4">
+Add Patient
+</button>
+
+</div>
+
+<!-- PATIENT TABLE -->
+
+<div class="card bg-base-100 shadow p-6">
+
+<h2 class="text-xl font-semibold mb-4">Patient List</h2>
+
+<table class="table w-full">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Age</th>
+<th>Gender</th>
+<th>Phone</th>
+</tr>
+</thead>
+
+<tbody id="patientTable"></tbody>
+
+</table>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="../js/patients.js"></script>
+<script>
+function goBack(){
+window.history.back();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Node modules
+backend/node_modules/
+
+# Database configuration (local credentials)
+backend/db.js
+
+# Environment files
+.env
+backend/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Mac system file
+.DS_Store
+
+# Windows system file
+Thumbs.db

@@ -1,0 +1,20 @@
+const mysql = require("mysql2");
+
+// IMPORTANT: Copy this file to db.js and update credentials with your local MySQL settings
+const db = mysql.createConnection({
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'Password',  // ⚠️ CHANGE THIS to your MySQL password
+  database: 'hospital_db'
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error("Database connection failed:", err);
+  } else {
+    console.log("Connected to MySQL");
+  }
+});
+
+module.exports = db;
