@@ -328,15 +328,47 @@
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
 
-  @media(max-width:760px){
+  /* ── RESPONSIVE / MOBILE FIXES ── */
+  .mobile-toggle { display: none; }
+  .sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 35; opacity: 0; visibility: hidden; transition: all 0.3s;
+  }
+  .sidebar-overlay.open { opacity: 1; visibility: visible; }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main-wrapper { margin-left: 0; }
+    .mobile-toggle { display: flex; }
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 760px) {
     .form-grid-3 { grid-template-columns: 1fr; }
-    .stat-strip  { grid-template-columns: repeat(2,1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .stat-strip { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .content { padding: 20px 16px; }
+    .topbar { padding: 0 16px; }
+    .btn-primary { width: 100%; justify-content: center; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .search-wrap { max-width: 100%; margin-left: 0 !important; }
+    .table-meta { margin-left: 0; align-self: flex-end; }
+    .date-chip { display: none; }
+    .topbar-title { font-size: 0.85rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">
@@ -388,10 +420,13 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main-wrapper">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:12px">
+      <div class="btn-icon mobile-toggle" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </div>
+      
       <div class="btn-icon" onclick="window.history.back()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
       </div>
@@ -407,7 +442,6 @@
 
   <div class="content">
 
-    <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
         <h1>Billing</h1>
@@ -415,7 +449,6 @@
       </div>
     </div>
 
-    <!-- STAT STRIP -->
     <div class="stat-strip">
       <div class="stat-pill">
         <div class="stat-pill-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b">
@@ -455,13 +488,11 @@
       </div>
     </div>
 
-    <!-- GENERATE BILL FORM -->
     <div class="card form-card">
       <div class="card-title">Generate Bill</div>
       <div class="card-subtitle">Select an appointment, enter amount and date</div>
 
       <div class="form-grid-3">
-        <!-- Appointment select — id matches bills.js exactly -->
         <div class="field-group">
           <label class="field-label">Appointment</label>
           <div class="select-wrap">
@@ -471,7 +502,6 @@
           </div>
         </div>
 
-        <!-- Amount — id matches bills.js exactly -->
         <div class="field-group">
           <label class="field-label">Amount (₹)</label>
           <div class="amount-wrap">
@@ -480,7 +510,6 @@
           </div>
         </div>
 
-        <!-- Date — id matches bills.js exactly -->
         <div class="field-group">
           <label class="field-label">Bill Date</label>
           <input id="billDate" type="date" class="field-input">
@@ -493,7 +522,6 @@
       </button>
     </div>
 
-    <!-- BILLS TABLE -->
     <div class="card bills-card" style="margin-bottom:0">
       <div class="toolbar">
         <div style="font-family:'Syne',sans-serif;font-size:0.93rem;font-weight:700;color:var(--text)">Bills</div>
@@ -515,7 +543,6 @@
               <th>Receipt</th>
             </tr>
           </thead>
-          <!-- id="billTable" — exactly matches bills.js -->
           <tbody id="billTable">
             <tr><td><span class="skel" style="width:40px;height:13px"></span></td><td><span class="skel" style="width:130px;height:13px"></span></td><td><span class="skel" style="width:70px;height:13px"></span></td><td><span class="skel" style="width:90px;height:13px"></span></td><td><span class="skel" style="width:60px;height:13px"></span></td></tr>
             <tr><td><span class="skel" style="width:40px;height:13px"></span></td><td><span class="skel" style="width:110px;height:13px"></span></td><td><span class="skel" style="width:70px;height:13px"></span></td><td><span class="skel" style="width:90px;height:13px"></span></td><td><span class="skel" style="width:60px;height:13px"></span></td></tr>
@@ -530,6 +557,13 @@
 
 <div class="toast" id="toast"></div>
 
+<script>
+  /* ── MOBILE SIDEBAR ── */
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('open');
+    document.querySelector('.sidebar-overlay').classList.toggle('open');
+  }
+</script>
 <script src="/frontend/js/bills.js"></script>
 </body>
 </html>

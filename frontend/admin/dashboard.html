@@ -339,11 +339,42 @@
     animation: fadeUp 0.3s both;
     display: none;
   }
+
+  /* ── RESPONSIVE / MOBILE FIXES ── */
+  .mobile-toggle { display: none; }
+  .sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 35; opacity: 0; visibility: hidden; transition: all 0.3s;
+  }
+  .sidebar-overlay.open { opacity: 1; visibility: visible; }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main-wrapper { margin-left: 0; }
+    .mobile-toggle { display: flex; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-row, .bottom-row { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .content { padding: 20px 16px; }
+    .topbar { padding: 0 16px; }
+    .date-chip { display: none; }
+    .topbar-title { font-size: 0.85rem; }
+    .appt-time { display: none; } /* Hide exact time to save horizontal space */
+  }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">
@@ -397,10 +428,12 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main-wrapper">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:12px">
+      <div class="btn-icon mobile-toggle" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </div>
       <div class="btn-icon" onclick="window.history.back()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
       </div>
@@ -433,7 +466,6 @@
       </div>
     </div>
 
-    <!-- STAT CARDS -->
     <div class="stats-grid">
       <div class="stat-card c-lime">
         <div class="stat-icon c-lime">
@@ -472,7 +504,6 @@
       </div>
     </div>
 
-    <!-- CHARTS -->
     <div class="charts-row">
       <div class="card">
         <div class="card-header">
@@ -509,9 +540,7 @@
       </div>
     </div>
 
-    <!-- BOTTOM -->
     <div class="bottom-row">
-      <!-- Recent appointments -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -521,12 +550,10 @@
           <a href="appointments.html" style="font-size:0.76rem;color:var(--lime);text-decoration:none;font-weight:600">View all →</a>
         </div>
         <div class="appt-list" id="apptList">
-          <!-- populated by JS -->
           <div style="color:var(--dimmed);font-size:0.82rem;padding:16px 0;text-align:center">Loading appointments…</div>
         </div>
       </div>
 
-      <!-- Dept breakdown -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -556,6 +583,12 @@
 
 <script>
 const API = "http://localhost:5000";
+
+/* ── MOBILE SIDEBAR ── */
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
 
 /* ── UTILS ── */
 function showToast(msg) {

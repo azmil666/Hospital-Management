@@ -412,11 +412,48 @@
   ::-webkit-scrollbar{width:5px;height:5px}
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+
+  /* ── RESPONSIVE / MOBILE FIXES ── */
+  .mobile-toggle { display: none; }
+  .sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 35; opacity: 0; visibility: hidden; transition: all 0.3s;
+  }
+  .sidebar-overlay.open { opacity: 1; visibility: visible; }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main-wrapper { margin-left: 0; }
+    .mobile-toggle { display: flex; }
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+    .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .stat-strip { grid-template-columns: 1fr; }
+    .form-grid-4 { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .content { padding: 20px 16px; }
+    .topbar { padding: 0 16px; }
+    .form-actions { flex-direction: column; width: 100%; }
+    .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .search-wrap { max-width: 100%; }
+    .table-meta { margin-left: 0; align-self: flex-end; }
+    .modal-box { padding: 20px; }
+    .date-chip { display: none; }
+    .topbar-title { font-size: 0.85rem; }
+  }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">
@@ -468,10 +505,13 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main-wrapper">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:12px">
+      <div class="btn-icon mobile-toggle" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </div>
+
       <div class="btn-icon" onclick="window.history.back()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
       </div>
@@ -487,7 +527,6 @@
 
   <div class="content">
 
-    <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
         <h1>Appointments</h1>
@@ -499,7 +538,6 @@
       </button>
     </div>
 
-    <!-- STAT STRIP -->
     <div class="stat-strip">
       <div class="stat-pill">
         <div class="stat-pill-icon" style="background:rgba(132,204,22,0.12);color:#84cc16">
@@ -539,7 +577,6 @@
       </div>
     </div>
 
-    <!-- CREATE FORM -->
     <div class="card form-card" id="addPanel" style="display:none; margin-bottom:22px;">
       <div class="form-card-header">
         <div>
@@ -590,7 +627,6 @@
       </div>
     </div>
 
-    <!-- TABLE CARD -->
     <div class="card table-card">
       <div class="toolbar">
         <div class="search-wrap">
@@ -632,7 +668,6 @@
   </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -745,6 +780,12 @@ function statusBadge(status) {
   const s = (status||'pending').toLowerCase();
   const label = s.charAt(0).toUpperCase() + s.slice(1);
   return `<span class="status-badge ${s}">${label}</span>`;
+}
+
+/* ── MOBILE SIDEBAR ── */
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
 }
 
 /* ── PANEL / MODAL ── */

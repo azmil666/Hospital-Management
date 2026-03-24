@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Departments | MedCore</title>
+<title>Patients | MedCore</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -137,13 +137,28 @@
   }
   .page-header p { font-size: 0.83rem; color: var(--muted); margin-top: 5px; }
 
-  /* ── TWO-COL LAYOUT ── */
-  .two-col {
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: 22px;
-    align-items: start;
+  /* ── STAT STRIP ── */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; margin-bottom: 22px;
   }
+  .stat-pill {
+    background: var(--surface); border: 1px solid var(--border-subtle);
+    border-radius: 12px; padding: 16px 18px;
+    display: flex; align-items: center; gap: 12px;
+    transition: border-color 0.18s;
+  }
+  .stat-pill:hover { border-color: var(--border); }
+  .stat-pill-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .stat-pill-icon svg { width: 17px; height: 17px; }
+  .stat-pill-val {
+    font-family: 'Syne', sans-serif; font-size: 1.4rem;
+    font-weight: 800; letter-spacing: -0.03em; color: var(--text); line-height: 1;
+  }
+  .stat-pill-lbl { font-size: 0.7rem; color: var(--dimmed); margin-top: 2px; }
 
   /* ── CARD ── */
   .card {
@@ -153,39 +168,61 @@
   }
   .card:hover { border-color: var(--border); }
   .card-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); }
-  .card-subtitle { font-size: 0.74rem; color: var(--muted); margin-top: 2px; margin-bottom: 20px; }
+  .card-subtitle { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
 
   /* ── FORM ── */
-  .field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .form-card { margin-bottom: 22px; }
+  .form-card-header {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 20px;
+  }
+  .form-toggle {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 0.78rem; color: var(--muted); cursor: pointer;
+    padding: 5px 12px; border-radius: 7px;
+    border: 1px solid var(--border-subtle); background: var(--surface2);
+    transition: all 0.18s; user-select: none;
+  }
+  .form-toggle:hover { border-color: var(--border); color: var(--text); }
+  .form-toggle svg { width: 14px; height: 14px; }
+
+  .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
   .field-label {
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
     text-transform: uppercase; color: var(--dimmed);
   }
-  .field-input {
+  .field-input, .field-select {
     background: var(--surface2); border: 1px solid var(--border-subtle);
     border-radius: 9px; padding: 10px 14px;
     color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
     outline: none; transition: all 0.18s; width: 100%;
+    appearance: none; -webkit-appearance: none;
   }
   .field-input::placeholder { color: var(--dimmed); }
-  .field-input:focus {
+  .field-input:focus, .field-select:focus {
     border-color: var(--border); background: var(--surface3);
     box-shadow: 0 0 0 3px rgba(132,204,22,0.08);
   }
-  .field-required {
-    font-size: 0.7rem; color: #f87171; margin-left: 3px;
+  .field-select { cursor: pointer; }
+  .field-select option { background: var(--surface2); color: var(--text); }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 5px solid var(--muted); pointer-events: none;
   }
 
+  .form-actions { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
   .btn-primary {
-    width: 100%; padding: 11px 22px; background: var(--lime); color: #0a0d08;
+    padding: 10px 22px; background: var(--lime); color: #0a0d08;
     border: none; border-radius: 9px; font-family: 'Syne', sans-serif;
     font-size: 0.85rem; font-weight: 700; cursor: pointer;
-    transition: all 0.18s; display: flex; align-items: center; justify-content: center; gap: 8px;
-    margin-top: 6px;
+    transition: all 0.18s; display: flex; align-items: center; gap: 8px;
   }
   .btn-primary:hover { background: var(--lime-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(132,204,22,0.25); }
   .btn-primary svg { width: 16px; height: 16px; }
-
   .btn-ghost {
     padding: 10px 18px; background: transparent; color: var(--muted);
     border: 1px solid var(--border-subtle); border-radius: 9px;
@@ -194,31 +231,9 @@
   }
   .btn-ghost:hover { border-color: var(--border); color: var(--text); background: var(--lime-faint); }
 
-  /* Recently added preview */
-  .recent-label {
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--dimmed);
-    margin: 20px 0 10px; padding-top: 18px;
-    border-top: 1px solid var(--border-subtle);
-  }
-  .recent-list { display: flex; flex-direction: column; gap: 8px; }
-  .recent-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 12px; background: var(--surface2);
-    border: 1px solid var(--border-subtle); border-radius: 9px;
-    font-size: 0.82rem;
-  }
-  .recent-icon {
-    width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .recent-icon svg { width: 14px; height: 14px; }
-  .recent-name { font-weight: 500; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .recent-head { font-size: 0.7rem; color: var(--dimmed); }
-
   /* ── TOOLBAR ── */
-  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
-  .search-wrap { position: relative; flex: 1; max-width: 280px; }
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
   .search-wrap svg {
     position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
     width: 15px; height: 15px; color: var(--dimmed); pointer-events: none;
@@ -232,6 +247,22 @@
   }
   .search-input::placeholder { color: var(--dimmed); }
   .search-input:focus { border-color: var(--border); box-shadow: 0 0 0 3px rgba(132,204,22,0.07); }
+  .filter-wrap { position: relative; }
+  .filter-select {
+    background: var(--surface2); border: 1px solid var(--border-subtle);
+    border-radius: 9px; padding: 9px 32px 9px 14px;
+    color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.83rem;
+    outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+    transition: all 0.18s;
+  }
+  .filter-select:focus { border-color: var(--border); color: var(--text); }
+  .filter-select option { background: var(--surface2); color: var(--text); }
+  .filter-wrap::after {
+    content: ''; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0; border-left: 4px solid transparent;
+    border-right: 4px solid transparent; border-top: 5px solid var(--muted);
+    pointer-events: none;
+  }
   .table-meta { margin-left: auto; font-size: 0.76rem; color: var(--dimmed); }
 
   /* ── TABLE ── */
@@ -246,38 +277,36 @@
   tbody tr { border-bottom: 1px solid var(--border-subtle); transition: background 0.14s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: rgba(255,255,255,0.018); }
-  tbody td { padding: 14px 14px; font-size: 0.84rem; color: var(--text); vertical-align: middle; }
+  tbody td { padding: 13px 14px; font-size: 0.84rem; color: var(--text); vertical-align: middle; }
 
-  /* Dept cell */
-  .dept-cell { display: flex; align-items: center; gap: 12px; }
-  .dept-icon {
-    width: 36px; height: 36px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .dept-icon svg { width: 17px; height: 17px; }
-  .dept-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
-  .dept-id   { font-size: 0.69rem; color: var(--dimmed); }
-
-  /* Head cell */
-  .head-cell { display: flex; align-items: center; gap: 9px; }
-  .head-avatar {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--surface2); border: 1px solid var(--border-subtle);
+  /* Patient cell */
+  .pat-cell { display: flex; align-items: center; gap: 11px; }
+  .pat-avatar {
+    width: 34px; height: 34px; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700;
-    color: var(--muted); flex-shrink: 0;
+    font-family: 'Syne', sans-serif; font-size: 0.77rem; font-weight: 700; flex-shrink: 0;
   }
+  .pat-name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+  .pat-id   { font-size: 0.7rem; color: var(--dimmed); }
 
-  /* Doctor count badge */
-  .count-badge {
+  /* Gender badge */
+  .gender-badge {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 3px 10px; border-radius: 20px;
-    font-size: 0.72rem; font-weight: 600;
-    background: var(--lime-faint); color: var(--lime);
-    border: 1px solid var(--border);
+    font-size: 0.68rem; font-weight: 700;
+  }
+  .gender-badge.male   { background: rgba(14,165,233,0.1); color: #38bdf8; }
+  .gender-badge.female { background: rgba(244,114,182,0.1); color: #f472b6; }
+  .gender-badge.other  { background: rgba(168,85,247,0.1); color: #c084fc; }
+
+  /* Age chip */
+  .age-chip {
+    display: inline-block; padding: 3px 9px;
+    background: var(--surface2); border: 1px solid var(--border-subtle);
+    border-radius: 6px; font-size: 0.78rem; color: var(--muted);
   }
 
-  /* Actions */
+  /* Action buttons */
   .action-cell { display: flex; gap: 7px; }
   .btn-edit {
     padding: 5px 12px; background: var(--lime-faint);
@@ -294,10 +323,11 @@
   }
   .btn-delete:hover { background: rgba(248,113,113,0.15); }
 
-  /* Empty / skeleton */
+  /* Empty / loading */
   .empty-state { text-align: center; padding: 48px 20px; color: var(--dimmed); }
   .empty-state svg { width: 38px; height: 38px; margin: 0 auto 12px; opacity: 0.25; display: block; }
   .empty-state p { font-size: 0.85rem; }
+
   .skel {
     background: linear-gradient(90deg, var(--surface2) 25%, rgba(255,255,255,0.03) 50%, var(--surface2) 75%);
     background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; display: block;
@@ -313,7 +343,7 @@
   .modal-overlay.open { display: flex; }
   .modal-box {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 16px; padding: 28px; width: 100%; max-width: 440px;
+    border-radius: 16px; padding: 28px; width: 100%; max-width: 480px;
     box-shadow: 0 24px 80px rgba(0,0,0,0.5);
     animation: modalIn 0.22s cubic-bezier(.34,1.36,.64,1) both;
   }
@@ -331,8 +361,9 @@
   }
   .modal-close:hover { border-color: var(--border); color: var(--text); }
   .modal-close svg { width: 14px; height: 14px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .modal-grid .full { grid-column: span 2; }
   .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border-subtle); }
-  .modal-actions .btn-primary { width: auto; margin-top: 0; }
 
   /* ── TOAST ── */
   .toast {
@@ -351,22 +382,56 @@
     from { opacity:0; transform:translateY(12px); }
     to   { opacity:1; transform:translateY(0); }
   }
-  .form-col  { animation: fadeUp 0.4s both 0.04s; }
-  .table-col { animation: fadeUp 0.4s both 0.1s; }
+  .stat-strip  { animation: fadeUp 0.4s both 0.04s; }
+  .form-card   { animation: fadeUp 0.4s both 0.08s; }
+  .table-card  { animation: fadeUp 0.4s both 0.12s; }
 
   ::-webkit-scrollbar{width:5px;height:5px}
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
 
-  /* Responsive: stack on small screens */
-  @media (max-width: 900px) {
-    .two-col { grid-template-columns: 1fr; }
+  /* ── RESPONSIVE / MOBILE FIXES ── */
+  .mobile-toggle { display: none; }
+  .sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 35; opacity: 0; visibility: hidden; transition: all 0.3s;
+  }
+  .sidebar-overlay.open { opacity: 1; visibility: visible; }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main-wrapper { margin-left: 0; }
+    .mobile-toggle { display: flex; }
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .stat-strip { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .content { padding: 20px 16px; }
+    .topbar { padding: 0 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .field-group[style*="grid-column:span 2"] { grid-column: span 1 !important; }
+    .form-actions { flex-direction: column; }
+    .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .search-wrap { max-width: 100%; }
+    .table-meta { margin-left: 0; align-self: flex-end; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-grid .full { grid-column: span 1; }
+    .date-chip { display: none; }
+    .topbar-title { font-size: 0.85rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">
@@ -388,7 +453,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
     Doctors
   </a>
-  <a class="nav-item" href="patients.html">
+  <a class="nav-item active" href="#">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
     Patients
   </a>
@@ -396,7 +461,7 @@
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
     Appointments
   </a>
-  <a class="nav-item active" href="#">
+  <a class="nav-item" href="departments.html">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
     Departments
   </a>
@@ -418,17 +483,20 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main-wrapper">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:12px">
+      <div class="btn-icon mobile-toggle" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </div>
+
       <div class="btn-icon" onclick="window.history.back()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
       </div>
       <a class="btn-icon" href="/index.html">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
       </a>
-      <span class="topbar-title">Departments</span>
+      <span class="topbar-title">Patients Management</span>
     </div>
     <div class="topbar-right">
       <div class="date-chip" id="dateChip">—</div>
@@ -437,93 +505,182 @@
 
   <div class="content">
 
-    <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
-        <h1>Departments</h1>
-        <p id="pageSubtitle">Loading department records…</p>
+        <h1>Patients</h1>
+        <p id="pageSubtitle">Loading patient records…</p>
+      </div>
+      <button class="btn-primary" onclick="openAddPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Add Patient
+      </button>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat-pill">
+        <div class="stat-pill-icon" style="background:rgba(132,204,22,0.12);color:#84cc16">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+        </div>
+        <div>
+          <div class="stat-pill-val" id="statTotal">—</div>
+          <div class="stat-pill-lbl">Total Patients</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon" style="background:rgba(14,165,233,0.12);color:#38bdf8">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0"/></svg>
+        </div>
+        <div>
+          <div class="stat-pill-val" id="statMale">—</div>
+          <div class="stat-pill-lbl">Male</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon" style="background:rgba(244,114,182,0.12);color:#f472b6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0"/></svg>
+        </div>
+        <div>
+          <div class="stat-pill-val" id="statFemale">—</div>
+          <div class="stat-pill-lbl">Female</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-pill-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        </div>
+        <div>
+          <div class="stat-pill-val" id="statAvgAge">—</div>
+          <div class="stat-pill-lbl">Avg. Age</div>
+        </div>
       </div>
     </div>
 
-    <!-- TWO-COL -->
-    <div class="two-col">
-
-      <!-- LEFT: ADD FORM -->
-      <div class="card form-col">
-        <div class="card-title">Add Department</div>
-        <div class="card-subtitle">Create a new hospital department</div>
-
-        <div class="field-group">
-          <label class="field-label">Department Name <span class="field-required">*</span></label>
-          <input id="departmentName" type="text" placeholder="e.g. Cardiology" class="field-input">
+    <div class="card form-card" id="addPanel" style="display:none; margin-bottom:22px;">
+      <div class="form-card-header">
+        <div>
+          <div class="card-title">Add New Patient</div>
+          <div class="card-subtitle">Fill in the details to register a patient</div>
         </div>
-        <div class="field-group">
-          <label class="field-label">Department Head</label>
-          <input id="departmentHead" type="text" placeholder="e.g. Dr. Mehta" class="field-input">
-        </div>
-
-        <button class="btn-primary" onclick="addDepartment()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-          Add Department
-        </button>
-
-        <!-- RECENTLY ADDED -->
-        <div class="recent-label">Recently Added</div>
-        <div class="recent-list" id="recentList">
-          <div style="color:var(--dimmed);font-size:0.78rem;text-align:center;padding:8px 0">None yet</div>
+        <div class="form-toggle" onclick="closeAddPanel()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+          Close
         </div>
       </div>
-
-      <!-- RIGHT: TABLE -->
-      <div class="card table-col">
-        <div class="toolbar">
-          <div class="search-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search departments…" oninput="filterTable()">
+      <div class="form-grid">
+        <div class="field-group" style="grid-column:span 2">
+          <label class="field-label">Patient Name</label>
+          <input id="patientName" type="text" placeholder="Full Name" class="field-input">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Age</label>
+          <input id="patientAge" type="number" placeholder="Age" min="0" max="120" class="field-input">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Gender</label>
+          <div class="select-wrap">
+            <select id="patientGender" class="field-select">
+              <option value="" disabled selected>Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
-          <div class="table-meta" id="tableMeta">—</div>
         </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Department</th>
-                <th>Head</th>
-                <th>Doctors</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="departmentTable">
-              <tr><td><span class="skel" style="width:130px;height:14px"></span></td><td><span class="skel" style="width:100px;height:14px"></span></td><td><span class="skel" style="width:40px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
-              <tr><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:90px;height:14px"></span></td><td><span class="skel" style="width:40px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
-              <tr><td><span class="skel" style="width:150px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td><td><span class="skel" style="width:40px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
-            </tbody>
-          </table>
+        <div class="field-group" style="grid-column:span 2">
+          <label class="field-label">Phone Number</label>
+          <input id="patientPhone" type="text" placeholder="+91 00000 00000" class="field-input">
         </div>
       </div>
-
+      <div class="form-actions">
+        <button class="btn-primary" onclick="addPatient()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          Add Patient
+        </button>
+        <button class="btn-ghost" onclick="closeAddPanel()">Cancel</button>
+      </div>
     </div>
+
+    <div class="card table-card">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search by name or phone…" oninput="filterTable()">
+        </div>
+        <div class="filter-wrap">
+          <select class="filter-select" id="genderFilter" onchange="filterTable()">
+            <option value="">All Genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="filter-wrap">
+          <select class="filter-select" id="ageFilter" onchange="filterTable()">
+            <option value="">All Ages</option>
+            <option value="0-17">Under 18</option>
+            <option value="18-35">18 – 35</option>
+            <option value="36-60">36 – 60</option>
+            <option value="61-999">60+</option>
+          </select>
+        </div>
+        <div class="table-meta" id="tableMeta">—</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="patientTable">
+            <tr><td><span class="skel" style="width:140px;height:14px"></span></td><td><span class="skel" style="width:30px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
+            <tr><td><span class="skel" style="width:120px;height:14px"></span></td><td><span class="skel" style="width:30px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
+            <tr><td><span class="skel" style="width:160px;height:14px"></span></td><td><span class="skel" style="width:30px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-title">Edit Department</span>
+      <span class="modal-title">Edit Patient</span>
       <div class="modal-close" onclick="closeModal()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
       </div>
     </div>
-    <input type="hidden" id="editDepartmentId">
-    <div class="field-group">
-      <label class="field-label">Department Name <span class="field-required">*</span></label>
-      <input id="editDepartmentName" type="text" class="field-input" placeholder="Department Name">
-    </div>
-    <div class="field-group">
-      <label class="field-label">Department Head</label>
-      <input id="editDepartmentHead" type="text" class="field-input" placeholder="e.g. Dr. Mehta">
+    <input type="hidden" id="editPatientId">
+    <div class="modal-grid">
+      <div class="field-group full">
+        <label class="field-label">Patient Name</label>
+        <input id="editPatientName" type="text" class="field-input" placeholder="Full Name">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Age</label>
+        <input id="editPatientAge" type="number" class="field-input" placeholder="Age" min="0" max="120">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Gender</label>
+        <div class="select-wrap">
+          <select id="editPatientGender" class="field-select">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group full">
+        <label class="field-label">Phone Number</label>
+        <input id="editPatientPhone" type="text" class="field-input" placeholder="Phone">
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
@@ -539,9 +696,13 @@
 
 <script>
 const API = "http://localhost:5000";
-let _allRows   = [];
-let _doctorMap = {}; // department_id → doctor count
-let _recentIds = []; // track last 3 added
+let _allRows = [];
+
+/* ── MOBILE SIDEBAR ── */
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
 
 /* ── UTILS ── */
 function showToast(msg, type = 'success') {
@@ -558,153 +719,124 @@ function escapeQuotes(str) {
 
 function initials(name) {
   if (!name) return '?';
-  const p = name.replace(/^Dr\.?\s*/i,'').trim().split(' ');
+  const p = name.trim().split(' ');
   return (p[0][0] + (p[1]?.[0] || '')).toUpperCase();
 }
 
-/* Deterministic icon colour per department name */
-const DEPT_COLORS = [
-  ['rgba(132,204,22,0.12)','#84cc16'],
-  ['rgba(14,165,233,0.12)','#38bdf8'],
-  ['rgba(16,185,129,0.12)','#10b981'],
-  ['rgba(245,158,11,0.12)','#f59e0b'],
-  ['rgba(168,85,247,0.12)','#a855f7'],
-  ['rgba(244,63,94,0.12)', '#f43f5e'],
-  ['rgba(251,146,60,0.12)','#fb923c'],
+const AVATAR_COLORS = [
+  ['rgba(132,204,22,0.14)', '#84cc16'],
+  ['rgba(14,165,233,0.14)', '#0ea5e9'],
+  ['rgba(16,185,129,0.14)', '#10b981'],
+  ['rgba(245,158,11,0.14)', '#f59e0b'],
+  ['rgba(168,85,247,0.14)', '#a855f7'],
+  ['rgba(244,63,94,0.14)',  '#f43f5e'],
+  ['rgba(244,114,182,0.14)','#f472b6'],
 ];
-function deptColor(str) {
+function avatarColor(str) {
   let h = 0;
-  for (let c of (str||'')) h = (h*31 + c.charCodeAt(0)) & 0xffff;
-  return DEPT_COLORS[h % DEPT_COLORS.length];
+  for (let c of (str || '')) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
 }
 
-/* ── MODAL ── */
-function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+function genderClass(g) {
+  if (!g) return 'other';
+  const l = g.toLowerCase();
+  if (l === 'male') return 'male';
+  if (l === 'female') return 'female';
+  return 'other';
+}
+
+/* ── PANEL / MODAL ── */
+function openAddPanel() {
+  const p = document.getElementById('addPanel');
+  p.style.display = 'block';
+  p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function closeAddPanel() { document.getElementById('addPanel').style.display = 'none'; }
+function closeModal()    { document.getElementById('editModal').classList.remove('open'); }
 document.getElementById('editModal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
-/* ── LOAD DOCTORS (for count per dept) ── */
-async function loadDoctorCounts() {
+/* ── LOAD PATIENTS ── */
+async function loadPatients() {
   try {
-    const res = await fetch(API + '/doctors');
-    const doctors = await res.json();
-    _doctorMap = {};
-    doctors.forEach(d => {
-      const k = String(d.department_id);
-      _doctorMap[k] = (_doctorMap[k] || 0) + 1;
-    });
-  } catch(e) { /* silent – counts will show 0 */ }
-}
-
-/* ── LOAD DEPARTMENTS ── */
-async function loadDepartments() {
-  try {
-    const res = await fetch(API + '/departments');
+    const res = await fetch(API + '/patients');
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
+    const patients = await res.json();
 
-    _allRows = data;
-    renderTable(data);
-    renderRecent(data);
+    _allRows = patients;
+    renderTable(patients);
+    updateStats(patients);
 
     document.getElementById('pageSubtitle').textContent =
-      `${data.length} department${data.length !== 1 ? 's' : ''} configured`;
-  } catch(err) {
-    console.error('loadDepartments:', err);
-    document.getElementById('departmentTable').innerHTML = `
-      <tr><td colspan="4">
+      `${patients.length} patient${patients.length !== 1 ? 's' : ''} registered`;
+  } catch (err) {
+    console.error('loadPatients:', err);
+    document.getElementById('patientTable').innerHTML = `
+      <tr><td colspan="5">
         <div class="empty-state">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
-          <p>Could not load departments. Is the backend running?</p>
+          <p>Could not load patients. Is the backend running?</p>
         </div>
       </td></tr>`;
     document.getElementById('pageSubtitle').textContent = 'Server unreachable';
   }
 }
 
-/* ── RENDER RECENT (left panel) ── */
-function renderRecent(data) {
-  const el = document.getElementById('recentList');
-  // show last 3 by highest ID (most recently added)
-  const recent = [...data].sort((a,b) => b.department_id - a.department_id).slice(0, 3);
-  if (recent.length === 0) {
-    el.innerHTML = '<div style="color:var(--dimmed);font-size:0.78rem;text-align:center;padding:8px 0">None yet</div>';
-    return;
-  }
-  el.innerHTML = '';
-  recent.forEach(dep => {
-    const [bg, fg] = deptColor(dep.department_name);
-    const item = document.createElement('div');
-    item.className = 'recent-item';
-    item.innerHTML = `
-      <div class="recent-icon" style="background:${bg};color:${fg}">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18"/></svg>
-      </div>
-      <div style="flex:1;min-width:0">
-        <div class="recent-name">${dep.department_name}</div>
-        <div class="recent-head">${dep.department_head || 'No head assigned'}</div>
-      </div>
-    `;
-    el.appendChild(item);
-  });
+/* ── STATS ── */
+function updateStats(patients) {
+  const total  = patients.length;
+  const male   = patients.filter(p => (p.gender||'').toLowerCase() === 'male').length;
+  const female = patients.filter(p => (p.gender||'').toLowerCase() === 'female').length;
+  const ages   = patients.map(p => parseInt(p.age)).filter(a => !isNaN(a));
+  const avg    = ages.length ? Math.round(ages.reduce((s,a) => s+a, 0) / ages.length) : '—';
+
+  document.getElementById('statTotal').textContent  = total;
+  document.getElementById('statMale').textContent   = male;
+  document.getElementById('statFemale').textContent = female;
+  document.getElementById('statAvgAge').textContent = avg + (typeof avg === 'number' ? ' yrs' : '');
 }
 
 /* ── RENDER TABLE ── */
-function renderTable(data) {
-  const tbody = document.getElementById('departmentTable');
+function renderTable(patients) {
+  const tbody = document.getElementById('patientTable');
   const meta  = document.getElementById('tableMeta');
-  meta.textContent = `${data.length} result${data.length !== 1 ? 's' : ''}`;
+  meta.textContent = `${patients.length} result${patients.length !== 1 ? 's' : ''}`;
 
-  if (data.length === 0) {
+  if (patients.length === 0) {
     tbody.innerHTML = `
-      <tr><td colspan="4">
+      <tr><td colspan="5">
         <div class="empty-state">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18"/></svg>
-          <p>No departments found. Add one on the left.</p>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719"/></svg>
+          <p>No patients found. Add one using the button above.</p>
         </div>
       </td></tr>`;
     return;
   }
 
   tbody.innerHTML = '';
-  data.forEach(dep => {
-    const [bg, fg] = deptColor(dep.department_name);
-    const doctorCount = _doctorMap[String(dep.department_id)] || 0;
-    const headInitials = dep.department_head ? initials(dep.department_head) : '—';
-
-    const row = document.createElement('tr');
+  patients.forEach(p => {
+    const [bg, fg] = avatarColor(p.patient_name);
+    const gClass   = genderClass(p.gender);
+    const row      = document.createElement('tr');
     row.innerHTML = `
       <td>
-        <div class="dept-cell">
-          <div class="dept-icon" style="background:${bg};color:${fg}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
-          </div>
+        <div class="pat-cell">
+          <div class="pat-avatar" style="background:${bg};color:${fg}">${initials(p.patient_name)}</div>
           <div>
-            <div class="dept-name">${dep.department_name}</div>
-            <div class="dept-id">#${dep.department_id}</div>
+            <div class="pat-name">${p.patient_name || '—'}</div>
+            <div class="pat-id">#${p.patient_id}</div>
           </div>
         </div>
       </td>
-      <td>
-        ${dep.department_head
-          ? `<div class="head-cell">
-              <div class="head-avatar">${headInitials}</div>
-              <span style="font-size:0.82rem;color:var(--muted)">${dep.department_head}</span>
-             </div>`
-          : `<span style="font-size:0.8rem;color:var(--dimmed)">—</span>`
-        }
-      </td>
-      <td>
-        <span class="count-badge">
-          <svg style="width:11px;height:11px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0"/></svg>
-          ${doctorCount} dr${doctorCount !== 1 ? 's' : ''}
-        </span>
-      </td>
+      <td><span class="age-chip">${p.age ?? '—'}</span></td>
+      <td><span class="gender-badge ${gClass}">${p.gender || '—'}</span></td>
+      <td style="color:var(--muted);font-size:0.82rem">${p.phone || '—'}</td>
       <td>
         <div class="action-cell">
-          <button class="btn-edit" onclick="openEditModal(${dep.department_id},'${escapeQuotes(dep.department_name)}','${escapeQuotes(dep.department_head)}')">Edit</button>
-          <button class="btn-delete" onclick="deleteDepartment(${dep.department_id},'${escapeQuotes(dep.department_name)}')">Delete</button>
+          <button class="btn-edit" onclick="openEditModal(${p.patient_id},'${escapeQuotes(p.patient_name)}',${p.age},'${escapeQuotes(p.gender)}','${escapeQuotes(p.phone)}')">Edit</button>
+          <button class="btn-delete" onclick="deletePatient(${p.patient_id},'${escapeQuotes(p.patient_name)}')">Delete</button>
         </div>
       </td>
     `;
@@ -714,88 +846,108 @@ function renderTable(data) {
 
 /* ── FILTER ── */
 function filterTable() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = _allRows.filter(dep =>
-    (dep.department_name||'').toLowerCase().includes(q) ||
-    (dep.department_head||'').toLowerCase().includes(q)
-  );
+  const q  = document.getElementById('searchInput').value.toLowerCase();
+  const g  = document.getElementById('genderFilter').value;
+  const ag = document.getElementById('ageFilter').value;
+
+  const filtered = _allRows.filter(p => {
+    const matchQ = !q ||
+      (p.patient_name || '').toLowerCase().includes(q) ||
+      (p.phone || '').toLowerCase().includes(q);
+    const matchG = !g || (p.gender || '').toLowerCase() === g.toLowerCase();
+    let matchA = true;
+    if (ag) {
+      const [lo, hi] = ag.split('-').map(Number);
+      const age = parseInt(p.age);
+      matchA = !isNaN(age) && age >= lo && age <= hi;
+    }
+    return matchQ && matchG && matchA;
+  });
   renderTable(filtered);
 }
 
-/* ── ADD DEPARTMENT ── */
-async function addDepartment() {
-  const department_name = document.getElementById('departmentName').value.trim();
-  const department_head = document.getElementById('departmentHead').value.trim();
+/* ── ADD PATIENT ── */
+async function addPatient() {
+  const patient_name = document.getElementById('patientName').value.trim();
+  const age          = document.getElementById('patientAge').value;
+  const gender       = document.getElementById('patientGender').value;
+  const phone        = document.getElementById('patientPhone').value.trim();
 
-  if (!department_name) { showToast('Please enter a department name.', 'error'); return; }
+  if (!patient_name) { showToast('Please enter patient name.', 'error'); return; }
+  if (!age)          { showToast('Please enter age.', 'error'); return; }
+  if (!gender || gender === 'Select Gender') { showToast('Please select a gender.', 'error'); return; }
+  if (!phone)        { showToast('Please enter phone number.', 'error'); return; }
 
   try {
-    const res = await fetch(API + '/departments', {
+    const res = await fetch(API + '/patients', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ department_name, department_head })
+      body: JSON.stringify({ patient_name, age: parseInt(age), gender, phone })
     });
     const data = await res.json();
     if (!res.ok) { showToast('Error: ' + (data.error || 'Unknown error'), 'error'); return; }
 
-    document.getElementById('departmentName').value = '';
-    document.getElementById('departmentHead').value = '';
+    document.getElementById('patientName').value = '';
+    document.getElementById('patientAge').value  = '';
+    document.getElementById('patientGender').value = '';
+    document.getElementById('patientPhone').value = '';
 
-    showToast(`"${department_name}" added successfully.`);
-    await loadDoctorCounts();
-    await loadDepartments();
-  } catch(err) {
-    console.error('addDepartment:', err);
-    showToast('Failed to add department. Server unreachable.', 'error');
+    closeAddPanel();
+    showToast(`${patient_name} added successfully.`);
+    loadPatients();
+  } catch (err) {
+    console.error('addPatient:', err);
+    showToast('Failed to add patient. Server unreachable.', 'error');
   }
 }
 
-/* ── OPEN EDIT ── */
-function openEditModal(id, name, head) {
-  document.getElementById('editDepartmentId').value   = id;
-  document.getElementById('editDepartmentName').value = name;
-  document.getElementById('editDepartmentHead').value = head;
+/* ── EDIT ── */
+function openEditModal(id, name, age, gender, phone) {
+  document.getElementById('editPatientId').value    = id;
+  document.getElementById('editPatientName').value  = name;
+  document.getElementById('editPatientAge').value   = age;
+  document.getElementById('editPatientGender').value = gender;
+  document.getElementById('editPatientPhone').value = phone;
   document.getElementById('editModal').classList.add('open');
 }
 
-/* ── SAVE EDIT ── */
 async function saveEdit() {
-  const id              = document.getElementById('editDepartmentId').value;
-  const department_name = document.getElementById('editDepartmentName').value.trim();
-  const department_head = document.getElementById('editDepartmentHead').value.trim();
+  const id           = document.getElementById('editPatientId').value;
+  const patient_name = document.getElementById('editPatientName').value.trim();
+  const age          = document.getElementById('editPatientAge').value;
+  const gender       = document.getElementById('editPatientGender').value;
+  const phone        = document.getElementById('editPatientPhone').value.trim();
 
-  if (!department_name) { showToast('Department name is required.', 'error'); return; }
+  if (!patient_name) { showToast('Name is required.', 'error'); return; }
 
   try {
-    const res = await fetch(`${API}/departments/${id}`, {
+    const res = await fetch(`${API}/patients/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ department_name, department_head })
+      body: JSON.stringify({ patient_name, age: parseInt(age), gender, phone })
     });
     const data = await res.json();
     if (!res.ok) { showToast('Update failed: ' + (data.error || 'Unknown error'), 'error'); return; }
     closeModal();
-    showToast(`"${department_name}" updated successfully.`);
-    await loadDoctorCounts();
-    await loadDepartments();
-  } catch(err) {
+    showToast(`${patient_name} updated successfully.`);
+    loadPatients();
+  } catch (err) {
     console.error('saveEdit:', err);
     showToast('Failed to update. Server unreachable.', 'error');
   }
 }
 
 /* ── DELETE ── */
-async function deleteDepartment(id, name) {
-  if (!confirm(`Delete "${name}"?\n\nThis will fail if doctors are still assigned to it.`)) return;
+async function deletePatient(id, name) {
+  if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
   try {
-    const res = await fetch(`${API}/departments/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API}/patients/${id}`, { method: 'DELETE' });
     const data = await res.json();
     if (!res.ok) { showToast('Delete failed: ' + (data.error || 'Unknown error'), 'error'); return; }
-    showToast(`"${name}" deleted.`);
-    await loadDoctorCounts();
-    await loadDepartments();
-  } catch(err) {
-    console.error('deleteDepartment:', err);
+    showToast(`${name} removed.`);
+    loadPatients();
+  } catch (err) {
+    console.error('deletePatient:', err);
     showToast('Failed to delete. Server unreachable.', 'error');
   }
 }
@@ -805,7 +957,7 @@ document.getElementById('dateChip').textContent = new Date().toLocaleDateString(
   weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
 });
 
-Promise.all([loadDoctorCounts(), loadDepartments()]);
+loadPatients();
 </script>
 </body>
 </html>

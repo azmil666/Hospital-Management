@@ -382,11 +382,50 @@
   ::-webkit-scrollbar{width:5px; height:5px}
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+
+  /* ── RESPONSIVE / MOBILE FIXES ── */
+  .mobile-toggle { display: none; }
+  .sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 35; opacity: 0; visibility: hidden; transition: all 0.3s;
+  }
+  .sidebar-overlay.open { opacity: 1; visibility: visible; }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main-wrapper { margin-left: 0; }
+    .mobile-toggle { display: flex; }
+  }
+
+  @media (max-width: 760px) {
+    .form-grid { grid-template-columns: 1fr 1fr; }
+    .modal-grid { grid-template-columns: 1fr; }
+    .modal-grid .full { grid-column: span 1; }
+  }
+
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .content { padding: 20px 16px; }
+    .topbar { padding: 0 16px; }
+    .toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+    .search-wrap { max-width: 100%; }
+    .table-meta { margin-left: 0; align-self: flex-end; }
+    .date-chip { display: none; }
+    .topbar-title { font-size: 0.85rem; }
+    .form-actions { flex-direction: column; }
+    .form-actions .btn-primary, .form-actions .btn-ghost { width: 100%; justify-content: center; }
+  }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-icon">
@@ -438,10 +477,13 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main-wrapper">
   <header class="topbar">
     <div style="display:flex;align-items:center;gap:12px">
+      <div class="btn-icon mobile-toggle" onclick="toggleSidebar()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </div>
+
       <div class="btn-icon" onclick="window.history.back()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
       </div>
@@ -456,7 +498,6 @@
   </header>
 
   <div class="content">
-    <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
         <h1>Doctors</h1>
@@ -468,7 +509,6 @@
       </button>
     </div>
 
-    <!-- ADD FORM -->
     <div class="card form-card" id="addPanel" style="display:none; margin-bottom:22px;">
       <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
         <div>
@@ -521,7 +561,6 @@
       </div>
     </div>
 
-    <!-- TABLE CARD -->
     <div class="card table-card">
       <div class="toolbar">
         <div class="search-wrap">
@@ -555,7 +594,6 @@
             </tr>
           </thead>
           <tbody id="doctorTable">
-            <!-- skeleton rows -->
             <tr class="skel-row"><td><span class="skel" style="width:140px;height:14px"></span></td><td><span class="skel" style="width:100px;height:14px"></span></td><td><span class="skel" style="width:90px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
             <tr class="skel-row"><td><span class="skel" style="width:120px;height:14px"></span></td><td><span class="skel" style="width:90px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
             <tr class="skel-row"><td><span class="skel" style="width:150px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:70px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
@@ -566,7 +604,6 @@
   </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -626,6 +663,12 @@
 <script>
 const API = "http://localhost:5000";
 let _allRows = []; // cached for client-side filtering
+
+/* ── MOBILE SIDEBAR ── */
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.sidebar-overlay').classList.toggle('open');
+}
 
 /* ── UTILS ── */
 function showToast(msg, type = 'success') {
