@@ -69,29 +69,46 @@ async function loadDepartments() {
 
 async function loadDoctors() {
   try {
-    const res = await fetch(API + "/doctors");
+    const res = await fetch(API + '/doctors');
     allDoctors = await res.json();
-    document.getElementById("doctorSelect").innerHTML =
-      `<option value="" disabled selected>Select Department First</option>`;
-  } catch (err) { console.error("loadDoctors error:", err); }
+
+    console.log("Doctors loaded:", allDoctors); // DEBUG
+
+  } catch(err) { 
+    console.error('loadDoctors:', err); 
+  }
 }
 
 /* -------- FILTER DOCTORS BY DEPARTMENT -------- */
 
 function filterDoctors(targetId) {
-  const srcId = targetId === "doctorSelect" ? "departmentSelect" : "editDepartmentSelect";
-  const deptId = document.getElementById(srcId).value;
-  const dropdown = document.getElementById(targetId);
-
-  const filtered = allDoctors.filter(d => String(d.department_id) === String(deptId));
-  dropdown.innerHTML = `<option value="" disabled selected>Select Doctor</option>`;
-
-  if (filtered.length === 0) {
-    dropdown.innerHTML += `<option disabled>No doctors in this department</option>`;
+  if (allDoctors.length === 0) {
+    console.log("Doctors not loaded yet");
     return;
   }
+
+  const srcId  = targetId === 'doctorSelect' ? 'departmentSelect' : 'editDepartmentSelect';
+  const deptId = document.getElementById(srcId).value;
+  const dd     = document.getElementById(targetId);
+
+  const deptName = document.getElementById(srcId).selectedOptions[0].text;
+
+  const filtered = allDoctors.filter(d => 
+    d.department_name === deptName
+  );
+
+  dd.disabled = false;
+  dd.innerHTML = `<option value="" disabled selected>Select Doctor</option>`;
+
+  if (filtered.length === 0) {
+    dd.innerHTML += `<option disabled>No doctors found</option>`;
+    return;
+  }
+
   filtered.forEach(d => {
-    dropdown.innerHTML += `<option value="${d.doctor_id}">${d.doctor_name} — ${d.specialization}</option>`;
+    dd.innerHTML += `<option value="${d.doctor_id}">
+      ${d.doctor_name} — ${d.specialization}
+    </option>`;
   });
 }
 

@@ -1,120 +1,552 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="lemonade">
+<html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Doctors | MedCore</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lime: #84cc16;
+    --lime-dark: #65a30d;
+    --lime-faint: rgba(132,204,22,0.07);
+    --lime-hover: rgba(132,204,22,0.12);
+    --bg: #0a0d08;
+    --surface: #111510;
+    --surface2: #161b12;
+    --surface3: #1c2318;
+    --border: rgba(132,204,22,0.14);
+    --border-subtle: rgba(255,255,255,0.05);
+    --text: #e8f0dc;
+    --muted: rgba(232,240,220,0.45);
+    --dimmed: rgba(232,240,220,0.2);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; overflow-x: hidden;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(132,204,22,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(132,204,22,0.025) 1px, transparent 1px);
+    background-size: 44px 44px; pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: ''; position: fixed; top: -200px; left: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(132,204,22,0.05) 0%, transparent 68%);
+    pointer-events: none; z-index: 0;
+  }
+  h1,h2,h3 { font-family: 'Syne', sans-serif; }
 
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.3/dist/full.min.css" rel="stylesheet">
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 256px; min-height: 100vh;
+    background: var(--surface); border-right: 1px solid var(--border);
+    position: fixed; top: 0; left: 0;
+    display: flex; flex-direction: column;
+    z-index: 40; padding-bottom: 24px;
+  }
+  .sidebar-brand {
+    padding: 26px 26px 22px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-icon {
+    width: 36px; height: 36px; background: var(--lime);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(132,204,22,0.38); flex-shrink: 0;
+  }
+  .brand-icon svg { width: 19px; height: 19px; color: #0a0d08; }
+  .brand-text { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
+  .brand-text span { color: var(--lime); }
+  .nav-section {
+    font-size: 0.63rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--dimmed); padding: 18px 26px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 26px; margin: 1px 10px;
+    border-radius: 9px; color: var(--muted);
+    font-size: 0.88rem; font-weight: 500;
+    text-decoration: none; transition: all 0.18s;
+    border: 1px solid transparent; cursor: pointer;
+  }
+  .nav-item:hover { background: var(--lime-faint); color: var(--text); border-color: var(--border); }
+  .nav-item.active { background: var(--lime-faint); color: var(--lime); border-color: var(--border); }
+  .nav-item svg { width: 17px; height: 17px; opacity: 0.65; flex-shrink: 0; }
+  .nav-item.active svg { opacity: 1; }
+  .sidebar-footer {
+    margin-top: auto; padding: 14px 10px 0;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .user-card {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 14px; background: var(--surface2);
+    border-radius: 11px; border: 1px solid var(--border-subtle);
+  }
+  .avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--lime-dark), var(--lime));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem;
+    color: #0a0d08; flex-shrink: 0;
+  }
+  .user-name { font-size: 0.8rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .user-role { font-size: 0.68rem; color: var(--muted); }
 
+  /* ── MAIN ── */
+  .main-wrapper { margin-left: 256px; min-height: 100vh; position: relative; z-index: 1; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(10,13,8,0.88); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0 32px; height: 62px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .btn-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--surface2); border: 1px solid var(--border-subtle);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer; transition: all 0.18s; text-decoration: none;
+  }
+  .btn-icon:hover { border-color: var(--border); color: var(--text); }
+  .btn-icon svg { width: 15px; height: 15px; }
+  .topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--muted); font-family: 'Syne', sans-serif; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .date-chip {
+    padding: 5px 12px; background: var(--surface2);
+    border: 1px solid var(--border-subtle); border-radius: 7px;
+    font-size: 0.76rem; color: var(--muted);
+  }
+
+  /* ── CONTENT ── */
+  .content { padding: 32px; }
+  .page-header {
+    display: flex; align-items: flex-end;
+    justify-content: space-between; margin-bottom: 28px;
+  }
+  .page-header h1 {
+    font-size: 1.9rem; font-weight: 800;
+    letter-spacing: -0.04em; color: var(--text); line-height: 1;
+  }
+  .page-header p { font-size: 0.83rem; color: var(--muted); margin-top: 5px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface); border: 1px solid var(--border-subtle);
+    border-radius: 15px; padding: 24px; transition: border-color 0.18s;
+    position: relative; z-index: 1;
+  }
+  .card:hover { border-color: var(--border); }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); }
+  .card-subtitle { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+  /* ── FORM SECTION ── */
+  .form-card { margin-bottom: 22px; }
+  .form-card .card-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+  }
+  .form-toggle {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 0.78rem; color: var(--muted); cursor: pointer;
+    padding: 5px 12px; border-radius: 7px;
+    border: 1px solid var(--border-subtle); background: var(--surface2);
+    transition: all 0.18s; user-select: none;
+  }
+  .form-toggle:hover { border-color: var(--border); color: var(--text); }
+  .form-toggle svg { width: 14px; height: 14px; }
+
+  .form-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--dimmed);
+  }
+
+  .field-input, .field-select {
+    background: var(--surface2); border: 1px solid var(--border-subtle);
+    border-radius: 9px; padding: 10px 14px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    outline: none; transition: all 0.18s; width: 100%;
+    appearance: none; -webkit-appearance: none;
+  }
+  .field-input::placeholder { color: var(--dimmed); }
+  .field-input:focus, .field-select:focus {
+    border-color: var(--border); background: var(--surface3);
+    box-shadow: 0 0 0 3px rgba(132,204,22,0.08);
+  }
+  .field-select { cursor: pointer; }
+  .field-select option { background: var(--surface2); color: var(--text); }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '';
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--muted);
+    pointer-events: none;
+  }
+
+  .form-actions { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
+
+  .btn-primary {
+    padding: 10px 22px; background: var(--lime); color: #0a0d08;
+    border: none; border-radius: 9px; font-family: 'Syne', sans-serif;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer;
+    transition: all 0.18s; display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--lime-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(132,204,22,0.25); }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  .btn-ghost {
+    padding: 10px 18px; background: transparent; color: var(--muted);
+    border: 1px solid var(--border-subtle); border-radius: 9px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .btn-ghost:hover { border-color: var(--border); color: var(--text); background: var(--lime-faint); }
+
+  /* ── SEARCH / FILTER BAR ── */
+  .toolbar {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+  }
+  .search-wrap { position: relative; flex: 1; max-width: 320px; }
+  .search-wrap svg {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; color: var(--dimmed); pointer-events: none;
+  }
+  .search-input {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--border-subtle); border-radius: 9px;
+    padding: 9px 14px 9px 36px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    outline: none; transition: all 0.18s;
+  }
+  .search-input::placeholder { color: var(--dimmed); }
+  .search-input:focus { border-color: var(--border); box-shadow: 0 0 0 3px rgba(132,204,22,0.07); }
+
+  .filter-select {
+    background: var(--surface2); border: 1px solid var(--border-subtle);
+    border-radius: 9px; padding: 9px 32px 9px 14px;
+    color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.83rem;
+    outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+    transition: all 0.18s;
+  }
+  .filter-select:focus { border-color: var(--border); color: var(--text); }
+  .filter-select option { background: var(--surface2); color: var(--text); }
+
+  .table-meta { margin-left: auto; font-size: 0.76rem; color: var(--dimmed); }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid var(--border-subtle); }
+  thead th {
+    padding: 10px 14px; text-align: left;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--dimmed);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.14s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.018); }
+  tbody td { padding: 13px 14px; font-size: 0.84rem; color: var(--text); vertical-align: middle; }
+
+  .doc-cell { display: flex; align-items: center; gap: 11px; }
+  .doc-avatar {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 0.77rem; font-weight: 700; flex-shrink: 0;
+  }
+  .doc-name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+  .doc-id { font-size: 0.7rem; color: var(--dimmed); }
+
+  /* Status badges */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 0.68rem; font-weight: 700; white-space: nowrap;
+  }
+  .status-badge::before { content:''; width:5px; height:5px; border-radius:50%; }
+  .status-badge.active   { background:rgba(132,204,22,0.12); color:#84cc16; }
+  .status-badge.active::before { background:#84cc16; box-shadow:0 0 5px rgba(132,204,22,0.6); }
+  .status-badge.inactive { background:rgba(248,113,113,0.1); color:#f87171; }
+  .status-badge.inactive::before { background:#f87171; }
+  .status-badge.on-leave { background:rgba(245,158,11,0.1); color:#f59e0b; }
+  .status-badge.on-leave::before { background:#f59e0b; }
+
+  .dept-chip {
+    display: inline-block; padding: 3px 9px;
+    background: rgba(14,165,233,0.1); color: #38bdf8;
+    border-radius: 6px; font-size: 0.73rem; font-weight: 500;
+  }
+
+  /* Action buttons */
+  .action-cell { display: flex; gap: 7px; }
+  .btn-edit {
+    padding: 5px 12px; background: var(--lime-faint);
+    border: 1px solid var(--border); color: var(--lime);
+    border-radius: 7px; font-size: 0.75rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-edit:hover { background: var(--lime-hover); }
+  .btn-delete {
+    padding: 5px 12px; background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.2); color: #f87171;
+    border-radius: 7px; font-size: 0.75rem; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-delete:hover { background: rgba(248,113,113,0.15); }
+
+  /* Empty / loading states */
+  .empty-state {
+    text-align: center; padding: 48px 20px; color: var(--dimmed);
+  }
+  .empty-state svg { width: 38px; height: 38px; margin: 0 auto 12px; opacity: 0.25; display: block; }
+  .empty-state p { font-size: 0.85rem; }
+
+  .skel-row td { padding: 13px 14px; }
+  .skel {
+    background: linear-gradient(90deg, var(--surface2) 25%, rgba(255,255,255,0.03) 50%, var(--surface2) 75%);
+    background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 4px; display: block;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; width: 100%; max-width: 520px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    animation: modalIn 0.22s cubic-bezier(.34,1.36,.64,1) both;
+  }
+  @keyframes modalIn {
+    from { opacity:0; transform:scale(0.94) translateY(12px); }
+    to   { opacity:1; transform:scale(1) translateY(0); }
+  }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .modal-close {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--surface2); border: 1px solid var(--border-subtle);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted); transition: all 0.15s;
+  }
+  .modal-close:hover { border-color: var(--border); color: var(--text); }
+  .modal-close svg { width: 14px; height: 14px; }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .modal-grid .full { grid-column: span 2; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border-subtle); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    padding: 12px 18px; border-radius: 10px;
+    font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    animation: toastIn 0.3s both; display: none;
+    max-width: 320px;
+  }
+  .toast.success { background: var(--surface); border: 1px solid rgba(132,204,22,0.3); color: #84cc16; }
+  .toast.error   { background: var(--surface); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+  @keyframes toastIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .card { animation: fadeUp 0.4s both; }
+  .form-card { animation-delay: 0.05s; }
+  .table-card { animation-delay: 0.1s; }
+
+  ::-webkit-scrollbar{width:5px; height:5px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+</style>
 </head>
+<body>
 
-<body class="bg-base-200">
-
-<!-- NAVBAR -->
-<nav class="navbar bg-base-100/60 backdrop-blur-lg sticky top-0 z-50 border-b border-base-content/10 px-4 lg:px-8 shadow-sm">
-
-  <div class="flex-1 gap-3">
-
-    <!-- BACK BUTTON -->
-    <button onclick="goBack()" class="btn btn-ghost btn-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-      </svg>
-    </button>
-
-    <!-- HOME BUTTON -->
-    <a href="../index.html" class="btn btn-ghost btn-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-      </svg>
-    </a>
-
-    <!-- LOGO -->
-    <div class="bg-primary text-primary-content p-2 rounded-2xl shadow-sm ml-2">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M4.5 10.5v6.75c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-6.75M12 4.5v15m0-15A2.25 2.25 0 0 0 9.75 6.75v.75m2.25-3a2.25 2.25 0 0 1 2.25 2.25v.75m-4.5 0h4.5"/>
       </svg>
     </div>
-
-    <span class="text-2xl font-extrabold tracking-tight">
-      Med<span class="text-primary">Core</span>
-    </span>
-
+    <span class="brand-text">Med<span>Core</span></span>
   </div>
 
-</nav>
+  <div class="nav-section">Overview</div>
+  <a class="nav-item" href="dashboard.html">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>
+    Dashboard
+  </a>
 
-<div class="flex min-h-screen">
+  <div class="nav-section">Management</div>
+  <a class="nav-item active" href="#">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+    Doctors
+  </a>
+  <a class="nav-item" href="patients.html">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+    Patients
+  </a>
+  <a class="nav-item" href="appointments.html">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+    Appointments
+  </a>
+  <a class="nav-item" href="departments.html">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+    Departments
+  </a>
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-base-100 border-r h-screen sticky top-0 flex flex-col">
+  <div class="nav-section">Finance</div>
+  <a class="nav-item" href="bills.html">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"/></svg>
+    Billing
+  </a>
 
-    <div class="p-6 text-2xl font-bold">
-      <span class="text-2xl font-extrabold tracking-tight">Med<span class="text-primary">Core</span></span>
-    </div>
-
-    <ul class="menu p-4 text-base flex-1">
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a class="active">Doctors</a></li>
-      <li><a href="patients.html">Patients</a></li>
-      <li><a href="appointments.html">Appointments</a></li>
-      <li><a href="bills.html">Billing</a></li>
-      <li><a href="departments.html">Departments</a></li>
-    </ul>
-
-  </aside>
-
-  <!-- MAIN -->
-  <main class="flex-1 p-8">
-
-    <h1 class="text-3xl font-bold mb-8">Doctors Management</h1>
-
-    <!-- ADD DOCTOR FORM -->
-    <div class="card bg-base-100 shadow p-6 mb-8">
-
-      <h2 class="text-xl font-semibold mb-4">Add Doctor</h2>
-
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-
-        <input id="doctorName" type="text" placeholder="Doctor Name" class="input input-bordered">
-
-        <input id="specialization" type="text" placeholder="Specialization" class="input input-bordered">
-
-        <select id="departmentSelect" class="select select-bordered">
-          <option disabled selected>Select Department</option>
-        </select>
-
-        <input id="contact" type="text" placeholder="Contact Number" class="input input-bordered">
-
-        <select id="statusSelect" class="select select-bordered">
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="on leave">On Leave</option>
-        </select>
-
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar">AD</div>
+      <div>
+        <div class="user-name">Admin User</div>
+        <div class="user-role">Super Administrator</div>
       </div>
+    </div>
+  </div>
+</aside>
 
-      <button onclick="addDoctor()" class="btn btn-primary mt-4 w-fit">
+<!-- MAIN -->
+<div class="main-wrapper">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="btn-icon" onclick="window.history.back()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
+      </div>
+      <a class="btn-icon" href="/index.html">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+      </a>
+      <span class="topbar-title">Doctors Management</span>
+    </div>
+    <div class="topbar-right">
+      <div class="date-chip" id="dateChip">—</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div>
+        <h1>Doctors</h1>
+        <p id="pageSubtitle">Loading doctor records…</p>
+      </div>
+      <button class="btn-primary" onclick="openAddPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
         Add Doctor
       </button>
-
     </div>
 
-    <!-- DOCTORS TABLE -->
-    <div class="card bg-base-100 shadow p-6">
+    <!-- ADD FORM -->
+    <div class="card form-card" id="addPanel" style="display:none; margin-bottom:22px;">
+      <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <div class="card-title">Add New Doctor</div>
+          <div class="card-subtitle">Fill in the details below to register a doctor</div>
+        </div>
+        <div class="form-toggle" onclick="closeAddPanel()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+          Close
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field-group">
+          <label class="field-label">Doctor Name</label>
+          <input id="doctorName" type="text" placeholder="Dr. Full Name" class="field-input">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Specialization</label>
+          <input id="specialization" type="text" placeholder="e.g. Cardiologist" class="field-input">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Department</label>
+          <div class="select-wrap">
+            <select id="departmentSelect" class="field-select">
+              <option value="" disabled selected>Select Department</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Contact Number</label>
+          <input id="contact" type="text" placeholder="+91 00000 00000" class="field-input">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Status</label>
+          <div class="select-wrap">
+            <select id="statusSelect" class="field-select">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="on leave">On Leave</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="addDoctor()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          Add Doctor
+        </button>
+        <button class="btn-ghost" onclick="closeAddPanel()">Cancel</button>
+      </div>
+    </div>
 
-      <h2 class="text-xl font-semibold mb-4">Doctors List</h2>
+    <!-- TABLE CARD -->
+    <div class="card table-card">
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search by name, specialization…" oninput="filterTable()">
+        </div>
+        <div class="select-wrap" style="position:relative">
+          <select class="filter-select" id="statusFilter" onchange="filterTable()" style="padding-right:32px">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="on leave">On Leave</option>
+          </select>
+          <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none">
+            <svg style="width:12px;height:12px;color:var(--muted)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+          </div>
+        </div>
+        <div class="table-meta" id="tableMeta">—</div>
+      </div>
 
-      <div class="overflow-x-auto">
-        <table class="table w-full">
+      <div class="table-wrap">
+        <table>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
+              <th>Doctor</th>
               <th>Specialization</th>
               <th>Department</th>
               <th>Contact</th>
@@ -123,76 +555,340 @@
             </tr>
           </thead>
           <tbody id="doctorTable">
+            <!-- skeleton rows -->
+            <tr class="skel-row"><td><span class="skel" style="width:140px;height:14px"></span></td><td><span class="skel" style="width:100px;height:14px"></span></td><td><span class="skel" style="width:90px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
+            <tr class="skel-row"><td><span class="skel" style="width:120px;height:14px"></span></td><td><span class="skel" style="width:90px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
+            <tr class="skel-row"><td><span class="skel" style="width:150px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:70px;height:14px"></span></td><td><span class="skel" style="width:110px;height:14px"></span></td><td><span class="skel" style="width:60px;height:14px"></span></td><td><span class="skel" style="width:80px;height:14px"></span></td></tr>
           </tbody>
         </table>
       </div>
-
     </div>
-
-  </main>
-
+  </div>
 </div>
 
 <!-- EDIT MODAL -->
-<dialog id="editModal" class="modal">
-  <div class="modal-box w-11/12 max-w-lg">
-
-    <h3 class="font-bold text-lg mb-4">Edit Doctor</h3>
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Edit Doctor</span>
+      <div class="modal-close" onclick="closeModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </div>
+    </div>
 
     <input type="hidden" id="editDoctorId">
 
-    <div class="grid grid-cols-1 gap-4">
-
-      <div class="form-control">
-        <label class="label"><span class="label-text">Doctor Name</span></label>
-        <input id="editDoctorName" type="text" class="input input-bordered">
+    <div class="modal-grid">
+      <div class="field-group full">
+        <label class="field-label">Doctor Name</label>
+        <input id="editDoctorName" type="text" class="field-input" placeholder="Dr. Full Name">
       </div>
-
-      <div class="form-control">
-        <label class="label"><span class="label-text">Specialization</span></label>
-        <input id="editSpecialization" type="text" class="input input-bordered">
+      <div class="field-group">
+        <label class="field-label">Specialization</label>
+        <input id="editSpecialization" type="text" class="field-input" placeholder="Specialization">
       </div>
-
-      <div class="form-control">
-        <label class="label"><span class="label-text">Department</span></label>
-        <select id="editDepartmentSelect" class="select select-bordered w-full">
-          <option disabled selected>Select Department</option>
-        </select>
+      <div class="field-group">
+        <label class="field-label">Department</label>
+        <div class="select-wrap">
+          <select id="editDepartmentSelect" class="field-select">
+            <option value="" disabled selected>Select Department</option>
+          </select>
+        </div>
       </div>
-
-      <div class="form-control">
-        <label class="label"><span class="label-text">Contact</span></label>
-        <input id="editContact" type="text" class="input input-bordered">
+      <div class="field-group">
+        <label class="field-label">Contact</label>
+        <input id="editContact" type="text" class="field-input" placeholder="Contact Number">
       </div>
-
-      <div class="form-control">
-        <label class="label"><span class="label-text">Status</span></label>
-        <select id="editStatusSelect" class="select select-bordered w-full">
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="on leave">On Leave</option>
-        </select>
+      <div class="field-group">
+        <label class="field-label">Status</label>
+        <div class="select-wrap">
+          <select id="editStatusSelect" class="field-select">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="on leave">On Leave</option>
+          </select>
+        </div>
       </div>
-
     </div>
 
-    <div class="modal-action">
-      <button onclick="saveEdit()" class="btn btn-primary">Save Changes</button>
-      <button onclick="document.getElementById('editModal').close()" class="btn">Cancel</button>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+        Save Changes
+      </button>
     </div>
-
   </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+</div>
 
-<script src="../js/doctors.js"></script>
+<div class="toast" id="toast"></div>
+
 <script>
-  function goBack() {
-    window.history.back();
-  }
-</script>
+const API = "http://localhost:5000";
+let _allRows = []; // cached for client-side filtering
 
+/* ── UTILS ── */
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  t.style.display = 'block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.style.display = 'none', 3500);
+}
+
+function escapeQuotes(str) {
+  return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function initials(name) {
+  if (!name) return '?';
+  const p = name.trim().split(' ');
+  return (p[0][0] + (p[1]?.[0] || '')).toUpperCase();
+}
+
+const AVATAR_COLORS = [
+  ['rgba(132,204,22,0.14)', '#84cc16'],
+  ['rgba(14,165,233,0.14)', '#0ea5e9'],
+  ['rgba(16,185,129,0.14)', '#10b981'],
+  ['rgba(245,158,11,0.14)', '#f59e0b'],
+  ['rgba(168,85,247,0.14)', '#a855f7'],
+  ['rgba(244,63,94,0.14)',  '#f43f5e'],
+];
+function avatarColor(str) {
+  let h = 0;
+  for (let c of (str||'')) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+
+function statusClass(s) {
+  if (!s) return '';
+  return s.toLowerCase().replace(' ', '-');
+}
+
+function getStatusBadge(status) {
+  const cls = statusClass(status);
+  const label = status ? status.charAt(0).toUpperCase() + status.slice(1) : '—';
+  return `<span class="status-badge ${cls}">${label}</span>`;
+}
+
+/* ── PANEL ── */
+function openAddPanel() {
+  const p = document.getElementById('addPanel');
+  p.style.display = 'block';
+  p.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function closeAddPanel() {
+  document.getElementById('addPanel').style.display = 'none';
+}
+
+/* ── MODAL ── */
+function closeModal() {
+  document.getElementById('editModal').classList.remove('open');
+}
+document.getElementById('editModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+/* ── LOAD DEPARTMENTS ── */
+async function loadDepartments() {
+  try {
+    const res = await fetch(API + '/departments');
+    const departments = await res.json();
+    ['departmentSelect', 'editDepartmentSelect'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = `<option value="" disabled selected>Select Department</option>`;
+      departments.forEach(dep => {
+        el.innerHTML += `<option value="${dep.department_id}">${dep.department_name}</option>`;
+      });
+    });
+  } catch (err) { console.error('loadDepartments:', err); }
+}
+
+/* ── LOAD DOCTORS ── */
+async function loadDoctors() {
+  try {
+    const res = await fetch(API + '/doctors');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const doctors = await res.json();
+
+    _allRows = doctors;
+    renderTable(doctors);
+
+    document.getElementById('pageSubtitle').textContent =
+      `${doctors.length} doctor${doctors.length !== 1 ? 's' : ''} registered`;
+  } catch (err) {
+    console.error('loadDoctors:', err);
+    document.getElementById('doctorTable').innerHTML = `
+      <tr><td colspan="6">
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+          <p>Could not load doctors. Is the backend running?</p>
+        </div>
+      </td></tr>`;
+    document.getElementById('pageSubtitle').textContent = 'Server unreachable';
+  }
+}
+
+function renderTable(doctors) {
+  const table = document.getElementById('doctorTable');
+  const meta  = document.getElementById('tableMeta');
+  meta.textContent = `${doctors.length} result${doctors.length !== 1 ? 's' : ''}`;
+
+  if (doctors.length === 0) {
+    table.innerHTML = `
+      <tr><td colspan="6">
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+          <p>No doctors found. Add one using the button above.</p>
+        </div>
+      </td></tr>`;
+    return;
+  }
+
+  table.innerHTML = '';
+  doctors.forEach(doc => {
+    const [bg, fg] = avatarColor(doc.doctor_name);
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>
+        <div class="doc-cell">
+          <div class="doc-avatar" style="background:${bg};color:${fg}">${initials(doc.doctor_name)}</div>
+          <div>
+            <div class="doc-name">${doc.doctor_name}</div>
+            <div class="doc-id">#${doc.doctor_id}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--muted)">${doc.specialization || '—'}</td>
+      <td><span class="dept-chip">${doc.department_name || '—'}</span></td>
+      <td style="color:var(--muted);font-size:0.82rem">${doc.contact || '—'}</td>
+      <td>${getStatusBadge(doc.status)}</td>
+      <td>
+        <div class="action-cell">
+          <button class="btn-edit" onclick="openEditModal(${doc.doctor_id},'${escapeQuotes(doc.doctor_name)}','${escapeQuotes(doc.specialization)}',${doc.department_id},'${escapeQuotes(doc.contact)}','${doc.status}')">Edit</button>
+          <button class="btn-delete" onclick="deleteDoctor(${doc.doctor_id},'${escapeQuotes(doc.doctor_name)}')">Delete</button>
+        </div>
+      </td>
+    `;
+    table.appendChild(row);
+  });
+}
+
+/* ── FILTER ── */
+function filterTable() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const s = document.getElementById('statusFilter').value.toLowerCase();
+  const filtered = _allRows.filter(doc => {
+    const matchQ = !q ||
+      (doc.doctor_name || '').toLowerCase().includes(q) ||
+      (doc.specialization || '').toLowerCase().includes(q) ||
+      (doc.department_name || '').toLowerCase().includes(q) ||
+      (doc.contact || '').toLowerCase().includes(q);
+    const matchS = !s || (doc.status || '').toLowerCase() === s;
+    return matchQ && matchS;
+  });
+  renderTable(filtered);
+}
+
+/* ── ADD DOCTOR ── */
+async function addDoctor() {
+  const doctor_name    = document.getElementById('doctorName').value.trim();
+  const specialization = document.getElementById('specialization').value.trim();
+  const department_id  = document.getElementById('departmentSelect').value;
+  const contact        = document.getElementById('contact').value.trim();
+  const status         = document.getElementById('statusSelect').value;
+
+  if (!doctor_name)    { showToast('Please enter doctor name.', 'error'); return; }
+  if (!specialization) { showToast('Please enter specialization.', 'error'); return; }
+  if (!department_id)  { showToast('Please select a department.', 'error'); return; }
+  if (!contact)        { showToast('Please enter contact number.', 'error'); return; }
+
+  try {
+    const res = await fetch(API + '/doctors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ doctor_name, specialization, department_id: parseInt(department_id), contact, status })
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast('Error: ' + (data.error || 'Unknown error'), 'error'); return; }
+
+    document.getElementById('doctorName').value = '';
+    document.getElementById('specialization').value = '';
+    document.getElementById('contact').value = '';
+    document.getElementById('departmentSelect').value = '';
+    document.getElementById('statusSelect').value = 'active';
+
+    closeAddPanel();
+    showToast(`Dr. ${doctor_name} added successfully.`);
+    loadDoctors();
+  } catch (err) {
+    console.error('addDoctor:', err);
+    showToast('Failed to add doctor. Server unreachable.', 'error');
+  }
+}
+
+/* ── OPEN EDIT ── */
+function openEditModal(id, name, specialization, department_id, contact, status) {
+  document.getElementById('editDoctorId').value         = id;
+  document.getElementById('editDoctorName').value       = name;
+  document.getElementById('editSpecialization').value   = specialization;
+  document.getElementById('editContact').value          = contact;
+  document.getElementById('editDepartmentSelect').value = department_id;
+  document.getElementById('editStatusSelect').value     = status;
+  document.getElementById('editModal').classList.add('open');
+}
+
+/* ── SAVE EDIT ── */
+async function saveEdit() {
+  const id             = document.getElementById('editDoctorId').value;
+  const doctor_name    = document.getElementById('editDoctorName').value.trim();
+  const specialization = document.getElementById('editSpecialization').value.trim();
+  const department_id  = document.getElementById('editDepartmentSelect').value;
+  const contact        = document.getElementById('editContact').value.trim();
+  const status         = document.getElementById('editStatusSelect').value;
+
+  if (!doctor_name || !specialization) { showToast('Name and specialization are required.', 'error'); return; }
+
+  try {
+    const res = await fetch(`${API}/doctors/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ doctor_name, specialization, department_id: parseInt(department_id), contact, status })
+    });
+    const data = await res.json();
+    if (!res.ok) { showToast('Update failed: ' + (data.error || 'Unknown error'), 'error'); return; }
+    closeModal();
+    showToast(`${doctor_name} updated successfully.`);
+    loadDoctors();
+  } catch (err) {
+    console.error('saveEdit:', err);
+    showToast('Failed to update. Server unreachable.', 'error');
+  }
+}
+
+/* ── DELETE ── */
+async function deleteDoctor(id, name) {
+  if (!confirm(`Delete "${name}"? This action cannot be undone.`)) return;
+  try {
+    const res = await fetch(`${API}/doctors/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (!res.ok) { showToast('Delete failed: ' + (data.error || 'Unknown error'), 'error'); return; }
+    showToast(`${name} removed.`);
+    loadDoctors();
+  } catch (err) {
+    console.error('deleteDoctor:', err);
+    showToast('Failed to delete. Server unreachable.', 'error');
+  }
+}
+
+/* ── INIT ── */
+document.getElementById('dateChip').textContent = new Date().toLocaleDateString('en-IN', {
+  weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+});
+
+loadDepartments();
+loadDoctors();
+</script>
 </body>
 </html>

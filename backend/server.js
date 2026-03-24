@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 app.get("/doctors", (req, res) => {
 
   const query = `
-  SELECT d.doctor_id, d.doctor_name, d.specialization, dep.department_name
+  SELECT d.doctor_id, d.doctor_name, d.specialization, d.department_id, dep.department_name
   FROM doctor d
   LEFT JOIN department dep
   ON d.department_id = dep.department_id
