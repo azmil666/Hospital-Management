@@ -59,6 +59,31 @@ app.post("/doctors", (req, res) => {
 
 });
 
+app.put("/doctors/:id", (req, res) => {
+  const id = req.params.id;
+  const { doctor_name, specialization, department_id, contact, status } = req.body;
+
+  const query = `
+    UPDATE doctor 
+    SET doctor_name=?, specialization=?, department_id=?, contact=?, status=?
+    WHERE doctor_id=?
+  `;
+
+  db.query(query, [doctor_name, specialization, department_id, contact, status, id], (err) => {
+    if (err) return res.status(500).json({ error: "Update failed" });
+    res.json({ message: "Doctor updated" });
+  });
+});
+
+app.delete("/doctors/:id", (req, res) => {
+  const id = req.params.id;
+
+  db.query("DELETE FROM doctor WHERE doctor_id=?", [id], (err) => {
+    if (err) return res.status(500).json({ error: "Delete failed" });
+    res.json({ message: "Doctor deleted" });
+  });
+});
+
 /* ---------------- PATIENTS ---------------- */
 
 app.get("/patients", (req, res) => {
@@ -100,6 +125,27 @@ app.post("/patients", (req, res) => {
 
   });
 
+});
+
+app.put("/patients/:id", (req, res) => {
+  const id = req.params.id;
+  const { patient_name, age, gender, phone } = req.body;
+
+  db.query(
+    "UPDATE patient SET patient_name=?, age=?, gender=?, phone=? WHERE patient_id=?",
+    [patient_name, age, gender, phone, id],
+    (err) => {
+      if (err) return res.status(500).json({ error: "Update failed" });
+      res.json({ message: "Patient updated" });
+    }
+  );
+});
+
+app.delete("/patients/:id", (req, res) => {
+  db.query("DELETE FROM patient WHERE patient_id=?", [req.params.id], (err) => {
+    if (err) return res.status(500).json({ error: "Delete failed" });
+    res.json({ message: "Patient deleted" });
+  });
 });
 
 /* ---------------- APPOINTMENTS ---------------- */
@@ -152,6 +198,26 @@ app.post("/appointments", (req, res) => {
 
   });
 
+});
+
+app.put("/appointments/:id", (req, res) => {
+  const { patient_id, doctor_id, appointment_date, status } = req.body;
+
+  db.query(
+    "UPDATE appointment SET patient_id=?, doctor_id=?, appointment_date=?, status=? WHERE appointment_id=?",
+    [patient_id, doctor_id, appointment_date, status, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: "Update failed" });
+      res.json({ message: "Appointment updated" });
+    }
+  );
+});
+
+app.delete("/appointments/:id", (req, res) => {
+  db.query("DELETE FROM appointment WHERE appointment_id=?", [req.params.id], (err) => {
+    if (err) return res.status(500).json({ error: "Delete failed" });
+    res.json({ message: "Appointment deleted" });
+  });
 });
 
 /* ---------------- BILLS ---------------- */
@@ -264,6 +330,24 @@ id: results.insertId
 
 });
 
+});
+
+app.put("/departments/:id", (req, res) => {
+  db.query(
+    "UPDATE department SET department_name=? WHERE department_id=?",
+    [req.body.department_name, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: "Update failed" });
+      res.json({ message: "Department updated" });
+    }
+  );
+});
+
+app.delete("/departments/:id", (req, res) => {
+  db.query("DELETE FROM department WHERE department_id=?", [req.params.id], (err) => {
+    if (err) return res.status(500).json({ error: "Delete failed" });
+    res.json({ message: "Department deleted" });
+  });
 });
 
 
